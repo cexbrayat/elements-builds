@@ -165,7 +165,7 @@ export function createCustomElement(component, config) {
             // Listen for events from the strategy and dispatch them as custom events
             this.ngElementEventsSubscription = this.ngElementStrategy.events.subscribe(e => {
                 /** @type {?} */
-                const customEvent = createCustomEvent(this.ownerDocument, e.name, e.value);
+                const customEvent = createCustomEvent(/** @type {?} */ ((this.ownerDocument)), e.name, e.value);
                 this.dispatchEvent(customEvent);
             });
         }
@@ -182,6 +182,8 @@ export function createCustomElement(component, config) {
             }
         }
     }
+    // Work around a bug in closure typed optimizations(b/79557487) where it is not honoring static
+    // field externs. So using quoted access to explicitly prevent renaming.
     NgElementImpl['observedAttributes'] = Object.keys(attributeToPropertyInputs);
     if (false) {
         /* TODO: handle strange member:

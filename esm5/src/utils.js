@@ -96,7 +96,7 @@ export function createCustomEvent(doc, name, detail) {
  * @return {?}
  */
 export function isElement(node) {
-    return node.nodeType === Node.ELEMENT_NODE;
+    return !!node && node.nodeType === Node.ELEMENT_NODE;
 }
 /**
  * Check whether the input is a function.

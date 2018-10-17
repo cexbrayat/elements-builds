@@ -1,5 +1,5 @@
 /**
- * @license Angular v7.0.0-beta.4-a2418a9037
+ * @license Angular v7.0.0-rc.1-1c561a833c
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
@@ -105,7 +105,7 @@ function createCustomEvent(doc, name, detail) {
  * @return {?}
  */
 function isElement(node) {
-    return node.nodeType === Node.ELEMENT_NODE;
+    return !!node && node.nodeType === Node.ELEMENT_NODE;
 }
 /**
  * Check whether the input is a function.
@@ -466,8 +466,6 @@ var ComponentNgElementStrategy = /** @class */ (function () {
             else {
                 // Keep track of inputs that were not initialized in case we need to know this for
                 // calling ngOnChanges with SimpleChanges
-                // Keep track of inputs that were not initialized in case we need to know this for
-                // calling ngOnChanges with SimpleChanges
                 _this.uninitializedInputs.add(propName);
             }
         });
@@ -674,10 +672,6 @@ function createCustomElement(component, config) {
             // Do not assume this strategy has been created.
             // TODO(andrewseguin): Add e2e tests that cover cases where the constructor isn't called. For
             // now this is tested using a Google internal test suite.
-            // Note that some polyfills (e.g. document-register-element) do not call the constructor.
-            // Do not assume this strategy has been created.
-            // TODO(andrewseguin): Add e2e tests that cover cases where the constructor isn't called. For
-            // now this is tested using a Google internal test suite.
             _this.ngElementStrategy = strategyFactory.create(injector || config.injector);
             return _this;
         }
@@ -718,7 +712,7 @@ function createCustomElement(component, config) {
             // Listen for events from the strategy and dispatch them as custom events
             this.ngElementEventsSubscription = this.ngElementStrategy.events.subscribe(function (e) {
                 /** @type {?} */
-                var customEvent = createCustomEvent(_this.ownerDocument, e.name, e.value);
+                var customEvent = createCustomEvent(/** @type {?} */ ((_this.ownerDocument)), e.name, e.value);
                 _this.dispatchEvent(customEvent);
             });
         };
@@ -737,6 +731,8 @@ function createCustomElement(component, config) {
                 this.ngElementEventsSubscription = null;
             }
         };
+        // Work around a bug in closure typed optimizations(b/79557487) where it is not honoring static
+        // field externs. So using quoted access to explicitly prevent renaming.
         NgElementImpl['observedAttributes'] = Object.keys(attributeToPropertyInputs);
         return NgElementImpl;
     }(NgElement));
@@ -768,7 +764,7 @@ function createCustomElement(component, config) {
 /** *
  * \@experimental
   @type {?} */
-var VERSION = new Version('7.0.0-beta.4-a2418a9037');
+var VERSION = new Version('7.0.0-rc.1-1c561a833c');
 
 /**
  * @fileoverview added by tsickle

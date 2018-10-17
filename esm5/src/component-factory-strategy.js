@@ -266,8 +266,6 @@ ComponentNgElementStrategy = /** @class */ (function () {
             else {
                 // Keep track of inputs that were not initialized in case we need to know this for
                 // calling ngOnChanges with SimpleChanges
-                // Keep track of inputs that were not initialized in case we need to know this for
-                // calling ngOnChanges with SimpleChanges
                 _this.uninitializedInputs.add(propName);
             }
         });

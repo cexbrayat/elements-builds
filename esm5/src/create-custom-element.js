@@ -152,10 +152,6 @@ export function createCustomElement(component, config) {
             // Do not assume this strategy has been created.
             // TODO(andrewseguin): Add e2e tests that cover cases where the constructor isn't called. For
             // now this is tested using a Google internal test suite.
-            // Note that some polyfills (e.g. document-register-element) do not call the constructor.
-            // Do not assume this strategy has been created.
-            // TODO(andrewseguin): Add e2e tests that cover cases where the constructor isn't called. For
-            // now this is tested using a Google internal test suite.
             _this.ngElementStrategy = strategyFactory.create(injector || config.injector);
             return _this;
         }
@@ -196,7 +192,7 @@ export function createCustomElement(component, config) {
             // Listen for events from the strategy and dispatch them as custom events
             this.ngElementEventsSubscription = this.ngElementStrategy.events.subscribe(function (e) {
                 /** @type {?} */
-                var customEvent = createCustomEvent(_this.ownerDocument, e.name, e.value);
+                var customEvent = createCustomEvent(/** @type {?} */ ((_this.ownerDocument)), e.name, e.value);
                 _this.dispatchEvent(customEvent);
             });
         };
@@ -215,6 +211,8 @@ export function createCustomElement(component, config) {
                 this.ngElementEventsSubscription = null;
             }
         };
+        // Work around a bug in closure typed optimizations(b/79557487) where it is not honoring static
+        // field externs. So using quoted access to explicitly prevent renaming.
         NgElementImpl['observedAttributes'] = Object.keys(attributeToPropertyInputs);
         return NgElementImpl;
     }(NgElement));
